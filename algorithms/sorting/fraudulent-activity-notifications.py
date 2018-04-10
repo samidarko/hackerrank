@@ -2,28 +2,17 @@
 
 
 def median(n, arr):
-    temp = sorted(arr)
     mid = n // 2
     if n % 2 == 0:
-        return (temp[mid-1] + temp[mid+1]) / 2
-    else:
-        return temp[mid]
-
-
-def median2(n, arr):
-    mid = n // 2
-    if n % 2 == 0:
-        # return (temp[mid-1] + temp[mid+1]) / 2
-        mid += 1
+        temp = None
         for i, v in enumerate(arr):
             mid -= v
-            if mid == 0:
+            if mid < 0 and temp is not None:
+                return (i + temp) / 2
+            if mid < 0 and v >= 2:
                 return i
-            elif mid > 0:
-                return (i + i + 1) / 2
-            else:
-                return (i + i - 1) / 2
-
+            if mid == 0 and temp is None:
+                temp = i
     else:
         mid += 1
         for i, v in enumerate(arr):
@@ -41,15 +30,21 @@ def activity_notifications(expenditure, d):
     notifications = 0
     start = 0
     end = d
-    sub = [0] * (arr_length + 1)
+    sub = [0] * (200 + 1)
     for v in expenditure[start:end]:
         sub[v] += 1
+
     for i in range(d, arr_length):
-        m = median2(d, sub)
+        m = median(d, sub)
         if expenditure[i] >= (2 * m):
             notifications += 1
 
         # slide the array
+        sub[expenditure[start]] -= 1
+        start += 1
+        end += 1
+        if end < arr_length:
+           sub[expenditure[end]] += 1
 
     return notifications
 
